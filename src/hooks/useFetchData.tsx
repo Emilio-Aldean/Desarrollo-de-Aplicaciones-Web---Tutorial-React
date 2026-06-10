@@ -9,12 +9,19 @@ export default function useFetchData(): OpenMeteoResponse | undefined {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(URL);
-            const json: OpenMeteoResponse = await response.json();
-            setData(json);
+            try {
+                const response = await fetch(URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const jsonData: OpenMeteoResponse = await response.json();
+                setData(jsonData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
         fetchData();
-    }, []);
+    }, []); // El array vacío asegura que el efecto se ejecute solo una vez después del primer renderizado
 
     return data;
 }
