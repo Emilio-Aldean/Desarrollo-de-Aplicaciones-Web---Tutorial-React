@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css'
 import { Grid } from '@mui/material';
 import HeaderUI from './components/HeaderUI';
@@ -9,7 +10,8 @@ import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
 
 function App() {
-   const dataFetcherOutput = useFetchData();
+   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+   const dataFetcherOutput = useFetchData(selectedOption);
 
    return (
       <Grid container spacing={5} sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -26,7 +28,7 @@ function App() {
 
          {/* Selector */}
          <Grid size={{ xs: 12, md: 3 }}>
-            <SelectorUI/>
+            <SelectorUI onOptionSelect={setSelectedOption}/>
          </Grid>
 
          {/* Indicadores */}
@@ -68,12 +70,12 @@ function App() {
 
          {/* Gráfico */}
          <Grid size={{ xs: 6, md: 6 }} sx={{ display: { xs: 'none', md: 'block' } }}>
-            <ChartUI />
+            <ChartUI data={dataFetcherOutput} />
          </Grid>
 
          {/* Tabla */}
          <Grid size={{ xs: 6, md: 6 }} sx={{ display: { xs: 'none', md: 'block' } }}>
-            <TableUI />
+            <TableUI data={dataFetcherOutput} />
          </Grid>
 
          {/* Información adicional */}

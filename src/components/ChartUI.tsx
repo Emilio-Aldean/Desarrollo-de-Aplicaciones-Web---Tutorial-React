@@ -1,21 +1,28 @@
 import { LineChart } from '@mui/x-charts/LineChart';
 import Typography from '@mui/material/Typography';
+import { type OpenMeteoResponse } from '../types/DashboardTypes';
 
-const arrValues1 = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const arrValues2 = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-const arrLabels = ['A','B','C','D','E','F','G'];
+interface ChartUIProps {
+   data: OpenMeteoResponse | undefined;
+}
 
-export default function ChartUI() {
+export default function ChartUI({ data }: ChartUIProps) {
+   if (!data) return <Typography variant="body2">Cargando datos...</Typography>;
+
+   const arrLabels = data.hourly.time.map(t => t.slice(11, 16));
+   const arrValues1 = data.hourly.temperature_2m;
+   const arrValues2 = data.hourly.wind_speed_10m;
+
    return (
       <>
          <Typography variant="h5" component="div">
-            Chart arrLabels vs arrValues1 & arrValues2
+            Temperatura y Viento — Hoy
          </Typography>
          <LineChart
             height={300}
             series={[
-               { data: arrValues1, label: 'value1'},
-               { data: arrValues2, label: 'value2'},
+               { data: arrValues1, label: `Temperatura (${data.hourly_units.temperature_2m})`},
+               { data: arrValues2, label: `Viento (${data.hourly_units.wind_speed_10m})`},
             ]}
             xAxis={[{ scaleType: 'point', data: arrLabels }]}
          />

@@ -1,5 +1,11 @@
 import Box from '@mui/material/Box';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import Typography from '@mui/material/Typography';
+import { type OpenMeteoResponse } from '../types/DashboardTypes';
+
+interface TableUIProps {
+   data: OpenMeteoResponse | undefined;
+}
 
 function combineArrays(arrLabels: Array<string>, arrValues1: Array<number>, arrValues2: Array<number>) {
    return arrLabels.map((label, index) => ({
@@ -11,21 +17,21 @@ function combineArrays(arrLabels: Array<string>, arrValues1: Array<number>, arrV
 }
 
 const columns: GridColDef[] = [
-   { field: 'id', headerName: 'ID', width: 90 },
+   { field: 'id', headerName: 'ID', width: 70 },
    {
       field: 'label',
-      headerName: 'Label',
-      width: 125,
+      headerName: 'Hora',
+      width: 100,
    },
    {
       field: 'value1',
-      headerName: 'Value 1',
-      width: 125,
+      headerName: 'Temperatura (°C)',
+      width: 150,
    },
    {
       field: 'value2',
-      headerName: 'Value 2',
-      width: 125,
+      headerName: 'Viento (km/h)',
+      width: 130,
    },
    {
       field: 'resumen',
@@ -38,13 +44,11 @@ const columns: GridColDef[] = [
    },
 ];
 
-const arrValues1 = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-const arrValues2 = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-const arrLabels = ['A','B','C','D','E','F','G'];
+export default function TableUI({ data }: TableUIProps) {
+   if (!data) return <Typography variant="body2">Cargando datos...</Typography>;
 
-export default function TableUI() {
-
-   const rows = combineArrays(arrLabels, arrValues1, arrValues2);
+   const arrLabels = data.hourly.time.map(t => t.slice(11, 16));
+   const rows = combineArrays(arrLabels, data.hourly.temperature_2m, data.hourly.wind_speed_10m);
 
    return (
       <Box sx={{ height: 350, width: '100%' }}>
